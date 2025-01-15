@@ -56,30 +56,76 @@ public class Main {
 
         //Ordini:
         Order order1 = new Order("111073091247", "spedito", LocalDate.of(2021, 2, 1),
-                                 LocalDate.of(2021, 4, 1), lista1, c1);
+                LocalDate.of(2021, 4, 1), lista1, c1);
 
         Order order2 = new Order("222729307410", "preso in carico", LocalDate.of(2021, 3, 7),
-                                 LocalDate.of(2021, 3, 9), lista2, c2);
+                LocalDate.of(2021, 3, 9), lista2, c2);
 
         Order order3 = new Order("333647324898", "consegnato", LocalDate.of(2021, 4, 3),
-                                 LocalDate.of(2021, 4, 9), lista3, c3);
+                LocalDate.of(2021, 4, 9), lista3, c3);
 
         Order order4 = new Order("444578238179", "spedito", LocalDate.of(2021, 2, 7),
-                                 LocalDate.of(2021, 2, 9), lista4, c4);
+                LocalDate.of(2021, 2, 9), lista4, c4);
 
         //   System.out.println(order1);
         System.out.println("---ES.1---");
 
-        List<Product> filteredProdByBooks = lista2.stream().filter(p-> p.getCategory().contains("Books") && p.getPrice() > 100).collect(Collectors.toList());
+        List<Product> filteredProdByBooks = lista2.stream().filter(p -> p.getCategory().contains("Books") && p.getPrice() > 100).collect(Collectors.toList());
         filteredProdByBooks.forEach(e -> System.out.println(e));
 
         System.out.println("//////////////////////////////////////////////////////////////////////////////");
 
-        List<Product> filteredProdByBaby = lista1.stream().filter(p-> p.getCategory().contains("Baby")).collect(Collectors.toList());
+        List<Product> filteredProdByBaby = lista1.stream().filter(p -> p.getCategory().contains("Baby")).collect(Collectors.toList());
         filteredProdByBaby.forEach(e -> System.out.println(e));
 
         System.out.println("//////////////////////////////////////////////////////////////////////////////");
 
         System.out.println("---ES.2---");
+        List<Order> ordersWhithBabyProducts = List.of(order1, order2, order3, order4).stream().
+                filter(order -> order.getProducts().stream()
+                        .anyMatch(product -> product.getCategory().contains("Baby"))).collect(Collectors.toList());
+        //qui ho filtrato una lista di ordini per i prodotti di ogni ordine e ne ho fatto un altro stream,
+        // all'interno dei prodotti ho cercato un match con i prodotti di categoria BABY. Per poi creare una lista
+        // che contenesse gli ordini al cui interno c'erano prodotti Baby.
+        //Per ogni ordine, controlla se nella lista di prodotti associata c'è almeno un prodotto con la categoria "Baby". Questo è fatto usando anyMatch.
+        // collect(Collectors.toList()):
+        //Raccoglie gli ordini filtrati in una lista.
+
+        ordersWhithBabyProducts.forEach(order -> System.out.println(order));
+        System.out.println("Lunghezza lista ordini contenenti Baby products: " + ordersWhithBabyProducts.size());
+
+        System.out.println("//////////////////////////////////////////////////////////////////////////////");
+        System.out.println("---ES.3---");
+
+        List<Product> filteredByBoys = List.of(product1, product2, product3, product4, product5, product6, product7, product8).stream().
+                filter(p -> p.getCategory().contains("Boys")).map(p -> {
+                    p.setPrice(p.getPrice() * 0.9);
+                    return p;
+                }).collect(Collectors.toList());
+
+        filteredByBoys.forEach(prod -> System.out.println(prod));  //	Alternativa: filteredByBoys.forEach(System.out::println);
+
+        System.out.println("//////////////////////////////////////////////////////////////////////////////");
+        System.out.println("---ES.4---");
+        /*.public static List<Product> getTier2Products() {
+		List<Order> filteredByTierAndDates = orders.stream()
+				.filter(order -> order.getCustomer().getTier() == 2
+						&& order.getOrderDate().isBefore(LocalDate.parse("2023-05-09"))
+						&& order.getOrderDate().isAfter(LocalDate.parse("2023-05-01")))
+				.toList();
+
+		List<Product> products = new ArrayList<>();
+
+		for (Order order : filteredByTierAndDates) {
+			products.addAll(order.getProducts());
+		}
+		return products;
+
+		/*
+		Alternativa al ciclo for:
+		return filteredByTierAndDates.stream().flatMap(order -> order.getProducts().stream()).toList();
+
+    } */
+
     }
 }
